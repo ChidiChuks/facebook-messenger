@@ -4,6 +4,8 @@ import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
 import './App.css';
 
 import FlipMove from 'react-flip-move';
+import SendIcon from '@material-ui/icons/Send';
+import { IconButton } from '@material-ui/core';
 
 // firebase and database configuration
 import db from './Firebase';
@@ -53,23 +55,37 @@ function App() {
 
   return (
     <div className="App">
+
+      <img src="https://facebookbrand.com/wp-content/uploads/2018/09/Header-e1538151782912.png?w=100&h=100" />
+
       <h1>Hello, Chidiebere Chukwuma!</h1>
       <h2>Welcome {username}</h2>
       
       {/* To activate the enter key on submit messages we have to wrap the entire elements in a form */}
       
-      <form>
+      <form className="app__form" >
 
-        <FormControl>
+        <FormControl className="app__formControl">
 
           {/* label for the input */}
           <InputLabel>Enter a message...</InputLabel>
 
           {/* input field */}
-          <Input value={input} onChange={event => setInput(event.target.value)} />
+          <Input className="app__input" placeholder='Enter a message...' value={input} onChange={event => setInput(event.target.value)} />
 
           {/* button */}
-          <Button disabled={!input} variant="contained" color="primary" type='submit' onClick={sendMessage}>Send Message</Button>
+          <IconButton 
+            disabled={!input} 
+            variant="contained" 
+            color="primary" 
+            type='submit' 
+            onClick={sendMessage}
+            className="app__iconButton"
+          >
+            <SendIcon />
+          </IconButton>
+
+          {/* <Button disabled={!input} variant="contained" color="primary" type='submit' onClick={sendMessage}>Send Message</Button> */}
 
         </FormControl>
 
