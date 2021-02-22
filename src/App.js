@@ -3,20 +3,29 @@ import React, { useState, useEffect } from 'react';
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
 import './App.css';
 
+import FlipMove from 'react-flip-move';
+
+// firebase and database configuration
+import db from './Firebase';
+import firebase from 'firebase';
+
 // personal imports
 import Message from './Message';
 
 function App() {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([
-    { username: 'ChidiChuks', text: 'hey guys' },
-    { username: 'Qazi', text: 'whats up?' }, 
-    { username: 'Sonny', text: 'hi peeps' }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState('');
 
   // useState = is simply a stateful way of writing variables in React because it auto refreshes changes automatically
   // useEffect =  is a block of code that is used to run conditional statements in React
+
+  useEffect(() => {
+    // run once the app component loads
+    db.collection('messages').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      setMessages(snapshot.docs.map(doc => ({id: doc.id, message: doc.data()})))
+    });
+  }, [] );
 
   useEffect(() => {
     // run code here...
@@ -30,8 +39,15 @@ function App() {
 
   const sendMessage = (event) => {
     event.preventDefault();
+
+    db.collection('messages').add({
+      message: input,
+      username: username,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
     // all logics to send a message goes in here
-    setMessages([...messages, { username: username, text: input }]);
+    // setMessages([...messages, { username: username, text: input }]);
     setInput('');
   }
 
@@ -58,13 +74,20 @@ function App() {
         </FormControl>
 
       </form>
-      
+
+      <FlipMove>
+
         {/* messages listed out */}
+
         {
-          messages.map(message => (
-            <Message username={message.username} text={message.text} />
+          messages.map(({id, message}) => (
+            <Message key={id} username={username} message={message} />
           ))
         }
+
+      </FlipMove>
+      
+        
 
     </div>
   );
